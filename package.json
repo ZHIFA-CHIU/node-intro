@@ -9,12 +9,17 @@
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "nodemon"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.5.9",
+    "@types/yargs": "^17.0.24",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "yargs": "^17.7.2"
   }
 }
