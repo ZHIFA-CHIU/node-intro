@@ -1,7 +1,20 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import {
+    createNote,
+    findNotes,
+    getAllNotes,
+    removeAllNotes,
+    removeNote,
+} from "./notes";
+import { listNotes } from "./utils";
 
 yargs(hideBin(process.argv))
+    .option("tags", {
+        alias: "t",
+        type: "string",
+        description: "Tags to add to the note",
+    })
     .command(
         "new <note>",
         "Create a new note",
@@ -10,18 +23,21 @@ yargs(hideBin(process.argv))
                 type: "string",
                 description: "The content of the note to create",
             }),
-        (argv) => console.log("argv:", argv.note)
+        async (argv) => {
+            if (argv.note) {
+                const note = await createNote(
+                    argv.note,
+                    argv.tags ? (argv.tags as unknown as string[]) : []
+                );
+                console.log(note);
+            }
+        }
     )
-    .option("tags", {
-        alias: "t",
-        type: "string",
-        description: "Tags to add to the note",
-    })
     .command(
         "all",
         "get all notes",
         () => {},
-        async (argv) => {}
+        async (argv) => listNotes(await getAllNotes())
     )
     .command(
         "find <filter>",
@@ -33,7 +49,14 @@ yargs(hideBin(process.argv))
                 type: "string",
             });
         },
-        async (argv) => {}
+        async (argv) => {
+            const filter = argv.filter;
+            const notes = await getAllNotes();
+            if (filter) {
+                const note = await findNotes(filter);
+                console.log(note);
+            }
+        }
     )
     .command(
         "remove <id>",
@@ -44,7 +67,10 @@ yargs(hideBin(process.argv))
                 description: "The id of the note you want to remove",
             });
         },
-        async (argv) => {}
+        async (argv) => {
+            const id = await removeNote(argv.id ?? -1);
+            console.log(id ?? -1);
+        }
     )
     .command(
         "web [port]",
@@ -62,7 +88,10 @@ yargs(hideBin(process.argv))
         "clean",
         "remove all notes",
         () => {},
-        async (argv) => {}
+        async (argv) => {
+            await removeAllNotes();
+            console.log("Cleared all notes");
+        }
     )
     .demandCommand(1)
     .parse();

@@ -1,4 +1,9 @@
 export type Note = {
     content: string;
-    id: Date;
+    id: number;
+    tags: string[]
+}
+
+export type DB = {
+    notes: Note[];
 };

@@ -1,0 +1,1 @@
+An simple 'note taking' command line application, which uses node.js and TypeScript.
